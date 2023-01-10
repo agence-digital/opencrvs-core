@@ -1531,7 +1531,7 @@ export const registerForms: IDefaultRegisterForms = {
                 name: 'familyNameEng',
                 previewGroup: 'motherNameInEnglish',
                 type: 'TEXT',
-                label: formMessageDescriptors.familyName,
+                label: formMessageDescriptors.motherFamilyName,
                 conditionals: [
                   {
                     action: 'hide',
@@ -1741,6 +1741,59 @@ export const registerForms: IDefaultRegisterForms = {
                 mapping: {
                   template: {
                     fieldName: 'DurationOfResidence',
+                    operation: 'plainInputTransformer'
+                  }
+                }
+              },
+              {
+                name: 'numberOfFetalDeaths',
+                type: 'NUMBER',
+                label: {
+                  defaultMessage: 'Number of fetal deaths',
+                  description:
+                    "text for number of fetal deaths of the mother's children",
+                  id: 'form.field.label.numberOfFetalDeaths'
+                },
+                customisable: true,
+                required: false,
+                initialValue: '',
+                validate: [],
+                conditionals: [
+                  {
+                    action: 'hide',
+                    expression:
+                      '!values.detailsExist && !mothersDetailsExistBasedOnContactAndInformant'
+                  }
+                ],
+                mapping: {
+                  template: {
+                    fieldName: 'numberOfFetalDeaths',
+                    operation: 'plainInputTransformer'
+                  }
+                }
+              },
+              {
+                name: 'numberLivingChildren',
+                type: 'NUMBER',
+                label: {
+                  defaultMessage: 'Number of children living in lifetime',
+                  description: 'text for number of children living in lifetime',
+                  id: 'form.field.label.numberLivingChildren'
+                },
+                customisable: true,
+                required: false,
+                initialValue: '',
+                validate: [],
+                conditionals: [
+                  {
+                    action: 'hide',
+                    expression:
+                      '!values.detailsExist && !mothersDetailsExistBasedOnContactAndInformant'
+                  }
+                ],
+                mapping: {
+                  template: {
+                    fieldName: 'numberLivingChildren',
                     operation: 'plainInputTransformer'
                   }
                 }
@@ -3214,25 +3267,35 @@ export const registerForms: IDefaultRegisterForms = {
                 }
               },
               {
-                name: 'birthDate',
+                name: 'deathDate',
                 type: 'DATE',
-                label: formMessageDescriptors.dateOfBirth,
+                label: formMessageDescriptors.deathEventDate,
                 required: true,
                 initialValue: '',
                 validate: [
                   {
-                    operation: 'isValidBirthDate'
+                    operation: 'isValidDeathOccurrenceDate'
                   }
                 ],
                 mapping: {
                   template: {
-                    operation: 'dateFormatTransformer',
-                    fieldName: 'deceasedBirthDate',
-                    parameters: ['birthDate', 'en', 'do MMMM yyyy']
+                    operation: 'deceasedDateFormatTransformation',
+                    fieldName: 'eventDate',
+                    parameters: ['en', 'do MMMM yyyy', 'deceased']
                   },
                   mutation: {
-                    operation: 'longDateTransformer',
-                    parameters: []
+                    operation: 'fieldToDeceasedDateTransformation',
+                    parameters: [
+                      'deceased',
+                      {
+                        operation: 'longDateTransformer',
+                        parameters: []
+                      }
+                    ]
+                  },
+                  query: {
+                    operation: 'deceasedDateToFieldTransformation',
+                    parameters: ['deceased']
                   }
                 }
               },
@@ -3337,6 +3400,42 @@ export const registerForms: IDefaultRegisterForms = {
                 conditionals: []
               },
               {
+                name: 'placeOfDeath',
+                customisable: false,
+                type: 'SELECT_WITH_OPTIONS',
+                previewGroup: 'placeOfDeath',
+                ignoreFieldLabelOnErrorMessage: true,
+                label: formMessageDescriptors.placeOfDeath,
+                required: true,
+                initialValue: '',
+                validate: [],
+                placeholder: formMessageDescriptors.formSelectPlaceholder,
+                options: [
+                  {
+                    value: 'HEALTH_FACILITY',
+                    label: formMessageDescriptors.healthInstitution
+                  },
+                  {
+                    value: 'DECEASED_USUAL_RESIDENCE',
+                    label: formMessageDescriptors.placeOfDeathSameAsPrimary
+                  },
+                  {
+                    value: 'OTHER',
+                    label: formMessageDescriptors.otherInstitution
+                  }
+                ],
+                mapping: {
+                  mutation: {
+                    operation: 'deathEventLocationMutationTransformer',
+                    parameters: []
+                  },
+                  query: {
+                    operation: 'eventLocationTypeQueryTransformer',
+                    parameters: []
+                  }
+                }
+              },
+              {
                 name: 'maritalStatus',
                 type: 'SELECT_WITH_OPTIONS',
                 label: formMessageDescriptors.maritalStatus,
@@ -3401,6 +3500,51 @@ export const registerForms: IDefaultRegisterForms = {
                     }
                   }
                 ]
+              },
+              {
+                name: 'mannerOfDeath',
+                type: 'SELECT_WITH_OPTIONS',
+                label: formMessageDescriptors.manner,
+                required: false,
+                initialValue: '',
+                validate: [],
+                placeholder: formMessageDescriptors.formSelectPlaceholder,
+                options: [
+                  {
+                    value: 'NATURAL_CAUSES',
+                    label: formMessageDescriptors.mannerNatural
+                  },
+                  {
+                    value: 'ACCIDENT',
+                    label: formMessageDescriptors.mannerAccident
+                  },
+                  {
+                    value: 'SUICIDE',
+                    label: formMessageDescriptors.mannerSuicide
+                  },
+                  {
+                    value: 'HOMICIDE',
+                    label: formMessageDescriptors.mannerHomicide
+                  },
+                  {
+                    value: 'MANNER_UNDETERMINED',
+                    label: formMessageDescriptors.mannerUndetermined
+                  }
+                ],
+                mapping: {
+                  mutation: {
+                    operation: 'sectionFieldToBundleFieldTransformer',
+                    parameters: ['mannerOfDeath']
+                  },
+                  query: {
+                    operation: 'bundleFieldToSectionFieldTransformer',
+                    parameters: ['mannerOfDeath']
+                  },
+                  template: {
+                    fieldName: 'mannerOfDeath',
+                    operation: 'selectTransformer'
+                  }
+                }
               }
               // PRIMARY ADDRESS SUBSECTION
               // PRIMARY ADDRESS
@@ -3413,6 +3557,12 @@ export const registerForms: IDefaultRegisterForms = {
                 id: 'deceasedNameInEnglish',
                 label: formMessageDescriptors.nameInEnglishPreviewGroup,
                 fieldToRedirect: 'familyNameEng',
+                delimiter: ' '
+              },
+              {
+                id: 'placeOfDeath',
+                label: formMessageDescriptors.placeOfDeath,
+                fieldToRedirect: 'placeOfDeath',
                 delimiter: ' '
               }
             ]
@@ -3647,7 +3797,6 @@ export const registerForms: IDefaultRegisterForms = {
                   }
                 }
               },
-
               {
                 name: 'deathLocation',
                 customisable: false,

@@ -1092,7 +1092,7 @@ export const formMessageDescriptors: IFormMessages = {
     id: 'user.form.securityquestion.enterResponse'
   },
   familyName: {
-    defaultMessage: 'Last name',
+    defaultMessage: 'Surname',
     description: 'Label for family name text input',
     id: 'form.field.label.familyName'
   },
@@ -1374,7 +1374,7 @@ export const formMessageDescriptors: IFormMessages = {
     id: 'form.field.label.educationAttainment'
   },
   motherFamilyName: {
-    defaultMessage: 'Last name',
+    defaultMessage: 'Surname',
     description: 'Label for form field: Family name',
     id: 'form.field.label.motherFamilyName'
   },
