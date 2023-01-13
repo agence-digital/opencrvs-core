@@ -21,10 +21,7 @@ interface IReactIntlDescriptions {
 }
 
 function existsInContentful(obj: any, value: string): boolean {
-  if (Object.values(obj).indexOf(value) > -1) {
-    return true
-  }
-  return false
+  return Object.values(obj).indexOf(value) > -1
 }
 
 async function extractMessages() {
