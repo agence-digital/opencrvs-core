@@ -1413,42 +1413,6 @@ export const registerForms: IDefaultRegisterForms = {
                 }
               },
               {
-                name: 'placeOfBirth',
-                customisable: false,
-                type: 'SELECT_WITH_OPTIONS',
-                previewGroup: 'placeOfBirth',
-                ignoreFieldLabelOnErrorMessage: true,
-                label: formMessageDescriptors.motherPlaceOfBirth,
-                required: true,
-                initialValue: '',
-                validate: [],
-                placeholder: formMessageDescriptors.formSelectPlaceholder,
-                options: [
-                  {
-                    value: 'HEALTH_FACILITY',
-                    label: formMessageDescriptors.healthInstitution
-                  },
-                  {
-                    value: 'PRIVATE_HOME',
-                    label: formMessageDescriptors.privateHome
-                  },
-                  {
-                    value: 'OTHER',
-                    label: formMessageDescriptors.otherInstitution
-                  }
-                ],
-                mapping: {
-                  mutation: {
-                    operation: 'birthEventLocationMutationTransformer',
-                    parameters: []
-                  },
-                  query: {
-                    operation: 'eventLocationTypeQueryTransformer',
-                    parameters: []
-                  }
-                }
-              },
-              {
                 name: 'dateOfLastLivingDeath',
                 type: 'DATE',
                 label: formMessageDescriptors.dateOfLastLivingDeath,
@@ -1884,12 +1848,52 @@ export const registerForms: IDefaultRegisterForms = {
                     operation: 'selectTransformer'
                   }
                 }
+              },
+              {
+                name: 'placeOfBirthTitle',
+                type: 'SUBSECTION',
+                label: formMessageDescriptors.motherPlaceOfBirth,
+                // previewGroup: 'placeOfBirth',
+                ignoreBottomMargin: true,
+                initialValue: '',
+                validate: []
+              },
+              {
+                name: 'placeOfBirth',
+                customisable: false,
+                type: 'SELECT_WITH_OPTIONS',
+                // previewGroup: 'placeOfBirth',
+                ignoreFieldLabelOnErrorMessage: true,
+                label: formMessageDescriptors.placeOfBirth,
+                required: true,
+                initialValue: '',
+                validate: [],
+                placeholder: formMessageDescriptors.formSelectPlaceholder,
+                options: [
+                  // {
+                  //   value: 'HEALTH_FACILITY',
+                  //   label: formMessageDescriptors.healthInstitution
+                  // },
+                  {
+                    value: 'PRIVATE_HOME',
+                    label: formMessageDescriptors.privateHome
+                  },
+                  {
+                    value: 'OTHER',
+                    label: formMessageDescriptors.otherInstitution
+                  }
+                ],
+                mapping: {
+                  mutation: {
+                    operation: 'birthEventLocationMutationTransformer',
+                    parameters: []
+                  },
+                  query: {
+                    operation: 'eventLocationTypeQueryTransformer',
+                    parameters: []
+                  }
+                }
               }
-              // PRIMARY ADDRESS SUBSECTION
-              // PRIMARY ADDRESS
-              // SECONDARY ADDRESS SAME AS PRIMARY
-              // SECONDARY ADDRESS SUBSECTION
-              // SECONDARY ADDRESS
             ],
             previewGroups: [
               {
@@ -1901,25 +1905,15 @@ export const registerForms: IDefaultRegisterForms = {
                 },
                 fieldToRedirect: 'familyNameEng',
                 delimiter: ' '
-              },
-              {
-                id: 'placeOfBirth',
-                label: {
-                  defaultMessage: 'Place of birth',
-                  description: "Group label for mother's Place of Birth",
-                  id: 'form.preview.group.label.placeOfBirth'
-                },
-                fieldToRedirect: 'placeOfBirth',
-                delimiter: ' '
               }
             ]
           }
-        ],
-        mapping: {
-          query: {
-            operation: 'emptyMotherSectionTransformer'
-          }
-        }
+        ]
+        // mapping: {
+        //   query: {
+        //     operation: 'emptyMotherSectionTransformer'
+        //   }
+        // }
       },
       {
         id: BirthSection.Father,
@@ -3674,7 +3668,7 @@ export const registerForms: IDefaultRegisterForms = {
                 id: 'placeOfBirth',
                 label: {
                   defaultMessage: 'Place of birth',
-                  description: "Group label for deceaced Place of Birth",
+                  description: 'Group label for deceaced Place of Birth',
                   id: 'form.preview.group.label.placeOfBirth'
                 },
                 fieldToRedirect: 'placeOfBirth',
